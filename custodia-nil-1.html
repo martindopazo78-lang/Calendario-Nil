@@ -185,16 +185,18 @@
     border-top:1px solid var(--line);cursor:pointer;
   }
   .fila:first-child{border-top:none;}
-  .fila.pasado{opacity:.45;}
+  .fila.pasado .f,.fila.pasado .info .r,.fila.pasado .info .m{opacity:.55;}
   .fila .f{width:58px;flex-shrink:0;font-size:.8rem;color:#7a8090;line-height:1.3;}
   .fila .f b{display:block;font-size:.95rem;color:var(--ink);}
   .fila .info{flex:1;min-width:0;font-size:.88rem;line-height:1.35;}
-  .fila .info .r{font-weight:bold;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .fila .info .r{font-weight:bold;color:var(--ink);}
+  .fila .info .tagrow{margin-top:6px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+  .fila .info .res{margin-top:0;}
   .fila .info .m{font-size:.78rem;color:#7a8090;}
 
   .kit{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:#4a5162;}
   .kit img{width:28px;height:28px;flex-shrink:0;border-radius:6px;object-fit:cover;}
-  .kit.big{margin-top:10px;padding:8px 12px;border-radius:12px;background:#f3f5f9;font-weight:bold;color:var(--ink);}
+  .kit.big{display:flex;width:fit-content;margin-top:10px;padding:8px 12px;border-radius:12px;background:#f3f5f9;font-weight:bold;color:var(--ink);}
   .kit.big img{width:72px;height:72px;border-radius:10px;background:#fff;}
   .fila .kitmini img{width:22px;height:22px;vertical-align:-6px;margin-right:4px;border-radius:4px;object-fit:cover;}
 
@@ -211,6 +213,35 @@
   .sem .pt{display:flex;align-items:center;gap:10px;font-size:.88rem;color:#4a5162;line-height:1.35;}
   .sem .pt img{width:44px;height:44px;border-radius:8px;object-fit:cover;background:#fff;flex-shrink:0;}
   .sem .pt .r{font-weight:bold;color:var(--ink);}
+
+  .res{margin-top:8px;font-size:.88rem;color:#4a5162;display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+  .marcador{display:inline-block;background:var(--ink);color:#fff;font-weight:bold;border-radius:8px;padding:3px 9px;font-size:.85rem;letter-spacing:.03em;}
+  .marcador.g{background:var(--tengo);} .marcador.p{background:var(--notengo);} .marcador.e{background:#8a94a6;}
+  .golnil{display:inline-block;background:#fff4d6;color:#8a6200;border-radius:8px;padding:3px 9px;font-size:.82rem;font-weight:bold;}
+  .golnil.no{background:#eef0f4;color:#7a8090;font-weight:normal;}
+  .btn-res{margin-top:10px;padding:9px 12px;font-family:inherit;font-size:.85rem;border:1px solid var(--line);background:#fff;border-radius:10px;cursor:pointer;color:#4a5162;}
+  .edit{border:none;background:none;font-size:1.05rem;cursor:pointer;padding:4px 6px;flex-shrink:0;}
+  .modal-bg{position:fixed;inset:0;background:rgba(20,25,40,.45);display:none;align-items:flex-end;justify-content:center;z-index:50;}
+  .modal-bg.on{display:flex;}
+  .modal{background:#fff;width:100%;max-width:440px;border-radius:20px 20px 0 0;padding:20px 18px 28px;}
+  .modal h3{font-size:1.05rem;margin-bottom:4px;}
+  .modal .sub{font-size:.82rem;color:#7a8090;margin-bottom:16px;}
+  .score{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:18px;}
+  .score .eq{flex:1;text-align:center;font-size:.78rem;font-weight:bold;color:#4a5162;}
+  .score input{width:100%;font-size:2rem;text-align:center;font-family:inherit;border:1px solid var(--line);border-radius:12px;padding:8px 0;margin-top:6px;}
+  .score .sep{font-size:1.6rem;color:#9aa0ad;padding-top:20px;}
+  .lbl{font-size:.78rem;color:#7a8090;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
+  .seg{display:flex;gap:8px;margin-bottom:14px;}
+  .seg button{flex:1;padding:11px;font-family:inherit;font-size:.95rem;border:1px solid var(--line);background:#fff;border-radius:10px;cursor:pointer;}
+  .seg button.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .stepper{display:none;align-items:center;justify-content:center;gap:16px;margin-bottom:16px;}
+  .stepper.on{display:flex;}
+  .stepper button{width:44px;height:44px;font-size:1.4rem;border:1px solid var(--line);background:#fff;border-radius:50%;cursor:pointer;}
+  .stepper span{font-size:1.5rem;font-weight:bold;min-width:70px;text-align:center;}
+  .acciones{display:flex;gap:8px;margin-top:6px;}
+  .acciones button{flex:1;padding:13px;font-family:inherit;font-size:.95rem;border-radius:12px;cursor:pointer;border:1px solid var(--line);background:#fff;}
+  .acciones .ok{background:var(--tengo);color:#fff;border-color:var(--tengo);font-weight:bold;}
+  .aviso{font-size:.72rem;color:#9aa0ad;text-align:center;margin-top:10px;}
 </style>
 </head>
 <body>
@@ -274,6 +305,26 @@
   </div>
 </div>
 
+
+<div class="modal-bg" id="mbg">
+  <div class="modal">
+    <h3 id="mTit"></h3>
+    <div class="sub" id="mSub"></div>
+    <div class="score">
+      <div class="eq">ENCARNACIÓ<input type="number" inputmode="numeric" min="0" id="mGf"></div>
+      <div class="sep">–</div>
+      <div class="eq" id="mRiv">RIVAL<input type="number" inputmode="numeric" min="0" id="mGc"></div>
+    </div>
+    <div class="lbl">¿Nil marcó?</div>
+    <div class="seg"><button data-v="si">⚽ Sí</button><button data-v="no">No</button></div>
+    <div class="stepper" id="mStep"><button id="mMenos">−</button><span id="mGoles">1 gol</span><button id="mMas">+</button></div>
+    <div class="acciones"><button id="mBorrar">Borrar</button><button id="mCancel">Cancelar</button><button class="ok" id="mOk">Guardar</button></div>
+    <div class="aviso" id="mAviso"></div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
   const q = document.getElementById('q');
   const ref = document.getElementById('ref');
@@ -332,19 +383,19 @@
     {j:1,  f:'2026-10-24', h:'12:45', c:'4',   local:'SALINES',          visit:'ENCARNACIÓ'},
     {j:2,  f:'2026-11-07', h:'9:45',  c:'4',   local:'ENCARNACIÓ',       visit:'TAGAMANENT'},
     {j:3,  f:'2026-11-14', h:'11:45', c:'4',   local:'VILAFRANCA',       visit:'ENCARNACIÓ'},
-    {j:4,  f:'2026-11-21', h:'12:45', c:'4-A', local:'ENCARNACIÓ',       visit:'JOAN BLANQUES'},
+    {j:4,  f:'2026-11-21', h:'12:45', c:'4',   local:'ENCARNACIÓ',       visit:'JOAN BLANQUES'},
     {j:5,  f:'2026-11-28', h:'8:45',  c:'4',   local:'JOANIC',           visit:'ENCARNACIÓ'},
-    {j:6,  f:'2026-12-12', h:'13:45', c:'4',   local:'ENCARNACIÓ',       visit:'MASPONS'},
-    {j:7,  f:'2026-12-19', h:'10:45', c:'4-A', local:'CARDENER',         visit:'ENCARNACIÓ'},
+    {j:6,  f:'2026-12-12', h:'13:45', c:'4-A', local:'ENCARNACIÓ',       visit:'MASPONS'},
+    {j:7,  f:'2026-12-19', h:'10:45', c:'5',   local:'CARDENER',         visit:'ENCARNACIÓ'},
     {j:8,  f:'2027-01-16', descanso:true},
-    {j:9,  f:'2027-01-23', h:'8:45',  c:'4-B', local:'ESCORIAL',         visit:'ENCARNACIÓ'},
+    {j:9,  f:'2027-01-23', h:'8:45',  c:'5',   local:'ESCORIAL',         visit:'ENCARNACIÓ'},
     {j:10, f:'2027-01-30', h:'12:45', c:'4',   local:'ENCARNACIÓ',       visit:'TRILLA'},
     {j:11, f:'2027-02-13', h:'9:45',  c:'4',   local:'BANYOLES',         visit:'ENCARNACIÓ'},
     {j:12, f:'2027-02-20', h:'8:45',  c:'4',   local:'ENCARNACIÓ',       visit:'BONAVISTA'},
-    {j:13, f:'2027-02-27', h:'13:45', c:'4',   local:'ENCARNACIÓ',       visit:'LLIBERTAT'},
+    {j:13, f:'2027-02-27', h:'13:45', c:'4-A', local:'ENCARNACIÓ',       visit:'LLIBERTAT'},
     {j:14, f:'2027-03-06', h:'11:45', c:'4',   local:'MONTSENY',         visit:'ENCARNACIÓ'},
     {j:15, f:'2027-03-13', h:'10:45', c:'4',   local:'ENCARNACIÓ',       visit:'VIREINA'},
-    {j:'Final', f:'2027-03-20', h:'Horario a confirmar', c:'', local:'Jornada final de liga', visit:'', final:true}
+    {j:16, f:'2027-03-20', h:'', c:'', local:'ENCARNACIÓ', visit:'RASPALL', final:true}
   ];
 
   function isoLocal(d){
@@ -356,18 +407,17 @@
     return (((semanas % 2) + 2) % 2) === 0;
   }
   function rival(p){
-    if(p.final) return 'Jornada final de liga';
-    return 'vs ' + (p.local === 'ENCARNACIÓ' ? p.visit : p.local);
+    return 'ENCARNACIÓ vs ' + (p.local === 'ENCARNACIÓ' ? p.visit : p.local);
   }
   function linea(p){
     if(p.descanso) return 'Jornada ' + p.j + ': descansa, no juega';
-    if(p.final) return 'Jornada final de liga · horario a confirmar';
-    return '<b>' + p.h + '</b> · Campo ' + p.c + ' · ' + rival(p);
+    if(p.final) return '<div style="font-weight:bold;color:var(--ink);font-size:1.05rem">' + rival(p) + '</div><div>Final de liga · horario y campo a confirmar</div>';
+    return '<div style="font-weight:bold;color:var(--ink);font-size:1.05rem">' + rival(p) + '</div><div><b>' + p.h + '</b> · Campo ' + p.c + '</div>';
   }
 
   // Camiseta: ENCARNACIÓ en la columna blanca (local) = BLANCA; en la azul (visitante) = AZUL
   function camiseta(p){
-    if(p.descanso || p.final) return null;
+    if(p.descanso) return null;
     return p.local === 'ENCARNACIÓ' ? 'blanca' : 'azul';
   }
   const FOTO_CAMISETA = {
@@ -382,6 +432,108 @@
     if(!c) return '';
     return '<div class="kit' + (big ? ' big' : '') + '">' + shirtSvg(c) + 'Camiseta ' + c + '</div>';
   }
+
+  // ================= RESULTADOS =================
+  // Pega aquí la configuración de tu proyecto Firebase (Consola Firebase → Configuración del proyecto → Tus apps → Web).
+  // Mientras esté vacío, los resultados se guardan solo en este móvil.
+  const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyCypTbuAXxhOvqPjTM7BaIXdCBrvp0E8IY",
+    authDomain: "calendario-nil.firebaseapp.com",
+    projectId: "calendario-nil",
+    storageBucket: "calendario-nil.firebasestorage.app",
+    messagingSenderId: "117310480362",
+    appId: "1:117310480362:web:8840e377ad0d7ac6899c93"
+  };
+  let RES = {};
+  let db = null;
+  const LS_KEY = 'nil_resultados_2026';
+  function compartido(){ return !!db; }
+  try{
+    if(FIREBASE_CONFIG.projectId && window.firebase){
+      firebase.initializeApp(FIREBASE_CONFIG);
+      db = firebase.firestore();
+      db.collection('nil_resultados').onSnapshot(snap => {
+        const r = {}; snap.forEach(doc => r[doc.id] = doc.data());
+        RES = r; repintarTodo();
+      }, err => { console.error(err); db = null; cargarLocal(); repintarTodo(); });
+    }
+  }catch(e){ console.error(e); db = null; }
+  function cargarLocal(){ try{ RES = JSON.parse(localStorage.getItem(LS_KEY) || '{}'); }catch(e){ RES = {}; } }
+  if(!db) cargarLocal();
+
+  function guardarRes(j, data){
+    const k = String(j);
+    if(data) RES[k] = data; else delete RES[k];
+    if(db){
+      const ref = db.collection('nil_resultados').doc(k);
+      (data ? ref.set(data) : ref.delete()).catch(e => alert('No se pudo guardar: ' + e.message));
+    } else {
+      try{ localStorage.setItem(LS_KEY, JSON.stringify(RES)); }catch(e){}
+    }
+    repintarTodo();
+  }
+  function resHtml(p){
+    const r = RES[String(p.j)];
+    if(!r) return '';
+    let s = '';
+    if(r.gf !== '' && r.gf != null && r.gc !== '' && r.gc != null){
+      const cls = r.gf > r.gc ? 'g' : (r.gf < r.gc ? 'p' : 'e');
+      s += '<span class="marcador ' + cls + '">' + r.gf + ' – ' + r.gc + '</span>';
+    }
+    if(r.marco === 'si') s += '<span class="golnil">⚽ Nil marcó' + (r.goles > 1 ? ' ' + r.goles : '') + '</span>';
+    else if(r.marco === 'no') s += '<span class="golnil no">Nil no marcó</span>';
+    return s ? '<div class="res">' + s + '</div>' : '';
+  }
+
+  // ---- Editor ----
+  const mbg = document.getElementById('mbg');
+  const mGf = document.getElementById('mGf'), mGc = document.getElementById('mGc');
+  let mP = null, mMarco = '', mGoles = 1;
+  function pintarSeg(){
+    document.querySelectorAll('.seg button').forEach(b => b.classList.toggle('on', b.dataset.v === mMarco));
+    document.getElementById('mStep').classList.toggle('on', mMarco === 'si');
+    document.getElementById('mGoles').textContent = mGoles + (mGoles === 1 ? ' gol' : ' goles');
+  }
+  function abrirEditor(j){
+    mP = PARTIDOS.find(x => String(x.j) === String(j));
+    if(!mP || mP.descanso) return;
+    const r = RES[String(mP.j)] || {};
+    const riv = mP.local === 'ENCARNACIÓ' ? mP.visit : mP.local;
+    const d = new Date(mP.f+'T00:00');
+    document.getElementById('mTit').textContent = rival(mP);
+    document.getElementById('mSub').textContent = 'Jornada ' + mP.j + ' · ' + dias[d.getDay()] + ' ' + d.getDate() + ' de ' + meses[d.getMonth()];
+    document.getElementById('mRiv').firstChild.textContent = riv;
+    mGf.value = (r.gf ?? ''); mGc.value = (r.gc ?? '');
+    mMarco = r.marco || ''; mGoles = r.goles || 1;
+    document.getElementById('mAviso').textContent = compartido() ? 'Se guarda para todos los que usan la app' : 'Ahora mismo se guarda solo en este móvil';
+    pintarSeg();
+    mbg.classList.add('on');
+  }
+  function cerrarEditor(){ mbg.classList.remove('on'); }
+  document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => { mMarco = (mMarco === b.dataset.v) ? '' : b.dataset.v; pintarSeg(); }));
+  document.getElementById('mMas').addEventListener('click', () => { mGoles = Math.min(20, mGoles+1); pintarSeg(); });
+  document.getElementById('mMenos').addEventListener('click', () => { mGoles = Math.max(1, mGoles-1); pintarSeg(); });
+  document.getElementById('mCancel').addEventListener('click', cerrarEditor);
+  mbg.addEventListener('click', e => { if(e.target === mbg) cerrarEditor(); });
+  document.getElementById('mBorrar').addEventListener('click', () => { if(confirm('¿Borrar el resultado de este partido?')){ guardarRes(mP.j, null); cerrarEditor(); } });
+  document.getElementById('mOk').addEventListener('click', () => {
+    const gf = mGf.value === '' ? '' : Math.max(0, parseInt(mGf.value,10) || 0);
+    const gc = mGc.value === '' ? '' : Math.max(0, parseInt(mGc.value,10) || 0);
+    const data = { gf, gc, marco: mMarco, goles: mMarco === 'si' ? mGoles : 0, actualizado: new Date().toISOString() };
+    if(gf === '' && gc === '' && !mMarco) guardarRes(mP.j, null); else guardarRes(mP.j, data);
+    cerrarEditor();
+  });
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-edit]');
+    if(b){ e.stopPropagation(); abrirEditor(b.dataset.edit); }
+  }, true);
+  function btnRes(p){
+    if(p.descanso) return '';
+    const tiene = !!RES[String(p.j)];
+    return '<button class="btn-res" data-edit="' + p.j + '">' + (tiene ? '✏️ Editar resultado' : '📝 Apuntar resultado') + '</button>';
+  }
+  function repintarTodo(){ pintarMatchDelDia(); pintarPartidos(); pintarMes(); }
+
   const matchHoy = document.getElementById('matchHoy');
   const proxEl = document.getElementById('prox');
   const listaEl = document.getElementById('lista');
@@ -405,7 +557,7 @@
     matchHoy.innerHTML =
       '<div class="match' + (p.descanso ? ' rest' : '') + '">' +
       '<div class="t">' + (mismoDia ? '⚽ Partido hoy' : '⚽ Partido esta semana · ' + dias[d.getDay()] + ' ' + fmtCorto(d)) + '</div>' +
-      linea(p) + kitHtml(p, true) + '</div>';
+      linea(p) + resHtml(p) + kitHtml(p, true) + btnRes(p) + '</div>';
   }
 
   function pintarPartidos(){
@@ -436,12 +588,13 @@
       const pasado = p.f < hoy;
       const r = p.descanso ? 'Descansa' : rival(p);
       const m = p.descanso ? 'Jornada ' + p.j + ' · no juega'
-              : p.final ? 'Horario a confirmar'
+              : p.final ? 'J16 · Final · horario y campo a confirmar'
               : '<span class="kitmini">' + shirtSvg(camiseta(p)) + '</span>' + 'J' + p.j + ' · ' + p.h + ' · Campo ' + p.c;
       return '<div class="fila' + (pasado ? ' pasado' : '') + '" data-f="' + p.f + '">' +
         '<div class="f"><b>' + d.getDate() + ' ' + meses[d.getMonth()].slice(0,3) + '</b>' + dias[d.getDay()].slice(0,3) + '</div>' +
-        '<div class="info"><div class="r">' + r + '</div><div class="m">' + m + '</div></div>' +
-        '<span class="tag ' + (t?'yes':'no') + '">' + (t ? 'Con vosotros' : 'Con el padre') + '</span></div>';
+        '<div class="info"><div class="r">' + r + '</div><div class="m">' + m + '</div>' +
+        '<div class="tagrow"><span class="tag ' + (t?'yes':'no') + '">' + (t ? 'Con vosotros' : 'Con el padre') + '</span>' + (p.descanso ? '' : resHtml(p)) + '</div></div>' +
+        (p.descanso ? '' : '<button class="edit" data-edit="' + p.j + '" aria-label="Apuntar resultado">✏️</button>') + '</div>';
     }).join('') || '<div class="fila"><div class="info"><div class="m">Ningún partido en este filtro</div></div></div>';
 
     listaEl.querySelectorAll('.fila[data-f]').forEach(el => {
@@ -478,7 +631,7 @@
         const c = camiseta(p);
         pt = '<div class="pt">' + (c ? shirtSvg(c) : '') + '<div><span class="r">' + rival(p) + '</span><br>' +
              dias[d.getDay()] + ' ' + d.getDate() + ' · ' + (p.final ? 'horario a confirmar' : p.h + ' · Campo ' + p.c) +
-             (c ? ' · camiseta ' + c : '') + '</div></div>';
+             (c ? ' · camiseta ' + c : '') + resHtml(p) + '</div></div>';
       }
       out += '<div class="sem ' + (t?'yes':'no') + '"><div class="top"><span class="rng">Semana del <b>' + fmtCorto(lun) + '</b> al <b>' + fmtCorto(finL) + '</b></span>' +
              '<span class="tag ' + (t?'yes':'no') + '">' + (t ? 'Con vosotros' : 'Con el padre') + '</span></div>' + pt + '</div>';
